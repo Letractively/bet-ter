@@ -257,7 +257,7 @@ TO DO:
 			- Rangliste / R. mit Abstand / Gewinnverteilung zusammenfassen (dann nur 1 Menüpunkt)
 			- globale defines in global_defs.inc.php definieren (z.B. $testausgabe.)
 			- "Zurück"-Seiten raus
-      - eine Seite wie "meine Entwicklung" erstellen und einbauen, die dem User eine Übersicht gibt, die eigene Platzierung im Turnierverauf zu sehen. Idealerweise als GRAPH, als Loesung moeglich: google charts 
+      - 02.07.2014 - sb : eine Seite wie "meine Entwicklung" erstellen und einbauen, die dem User eine Übersicht gibt, die eigene Platzierung im Turnierverauf zu sehen. Idealerweise als GRAPH, als Loesung moeglich: google charts 
       https://developers.google.com/chart/?hl=de
       
       
