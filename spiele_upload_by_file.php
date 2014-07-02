@@ -324,7 +324,7 @@ Finale;11.07.2010;20:30;?;?<br>
 		createSpiel($value);
 	}
 	print "</p>";   
-		
+	}	
 } //End of CLICKED 
 
 ?>

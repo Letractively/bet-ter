@@ -197,7 +197,7 @@ in den Ordner ./flags/ hochgeladen sein. Dies kannst Du mit der Option
 		}
 	}
 	print "</p>";   
-		
+  }		
 } //End of CLICKED 
 
 ?>
