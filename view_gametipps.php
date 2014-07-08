@@ -148,7 +148,11 @@ if (($Datum < $heute) || (($Datum == $heute) && ($Anpfiff < $time)))
   ");
 
   //SQL-Befehl zum Holen aller Tipps zum gewaehlten Spiel aus der DB
-  $db_get_tipps = "SELECT * FROM tipp WHERE SPIEL_ID=$game_to_show_ID";
+  $db_get_tipps = "SELECT t.*, u.USER_ID, u.user 
+                  FROM `tipp` t, `user` u 
+                  WHERE SPIEL_ID=$game_to_show_ID AND t.USER_ID = u.USER_ID 
+                  ORDER BY u.user ASC";
+  
   $result_tipps = mysql_db_query ($dbName, $db_get_tipps, $connect);
   
   $var = -1;

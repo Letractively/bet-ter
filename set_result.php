@@ -53,13 +53,17 @@ print $menu;
 //               FROM spiel  WHERE Tore2=-1  AND DATE_FORMAT( Datum,  '%Y-%m-%d'  )  <= DATE_ADD( CURDATE(  ) ,  INTERVAL  -0 DAY  )";
 $db_get_games="SELECT SPIEL_ID
                FROM spiel  
-							 WHERE Tore2=-1 AND DATE_FORMAT(Datum, '%Y-%m-%d') <= \"$heute\"";
+               WHERE Tore2=-1 AND DATE_FORMAT(Datum, '%Y-%m-%d') <= \"$heute\"";
 $ggID_result = mysql_query($db_get_games);
 
 //Gehe Spiel-IDs duch, die gerade geholt wurden
 
 //Wenn EINTRAGEN geklickt wurde
 if ($submit == " Eintragen ") {
+
+		if ($testausgabe) {
+			print "=====================================================================================================<br>";
+		}
 
     while ($ausgabe_get_gameID = mysql_fetch_array ($ggID_result))
     {
@@ -77,29 +81,32 @@ if ($submit == " Eintragen ") {
         Punkte bei den Tipps zu diesem Spiel eintragen
         +++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-        $db_get_tipps="SELECT t.Tore1, t.Tore2, t.Faktor, USER_ID FROM tipp t WHERE SPIEL_ID=$ausgabe_get_gameID[SPIEL_ID]";
+        $db_get_tipps="SELECT t.Tore1, t.Tore2, t.Faktor, t.USER_ID, u.user FROM tipp t, user u WHERE u.USER_ID = t.USER_ID AND SPIEL_ID=$ausgabe_get_gameID[SPIEL_ID]";
         $get_tipps_result = mysql_query($db_get_tipps);
         while ($ausgabe_get_tipp = mysql_fetch_array ($get_tipps_result))
         {
-            //Wenn Tipp korrekt
-            if(($ausgabe_get_tipp[Tore1] == $tor1)  && ($ausgabe_get_tipp[Tore2] == $tor2))
-            {
+				
+            if ($testausgabe) {
+	   					print "tor1 : tor2 = ". $tor1. " : ". $tor2. "<br>";
+					    print "Tipp von user ". $ausgabe_get_tipp[User]. ":  tor1 : tor2 (Faktor) = ". $ausgabe_get_tipp[Tore1] ." : ". $ausgabe_get_tipp[Tore2]. 
+						        "(". $ausgabe_get_tipp[Faktor]. ")<br>";
+					  }
+				
+            if ($ausgabe_get_tipp[Tore1] == 99 || $ausgabe_get_tipp[Tore2] == 99) { // nicht getippt
+              $points = 0; 
+            } else if(($ausgabe_get_tipp[Tore1] == $tor1)  && ($ausgabe_get_tipp[Tore2] == $tor2)) { // Tipp korrekt
                 $points=$ausgabe[Punkte_korrekter_Tipp];//$points=3;
-            }
-            else
-                //Wenn Tor-Differenz korrekt getippt wurde
-                if (($tor1 - $ausgabe_get_tipp[Tore1]) == ($tor2 - $ausgabe_get_tipp[Tore2]) && $tor1 > -1)
-                {
+            } else if (($tor1 - $ausgabe_get_tipp[Tore1]) == ($tor2 - $ausgabe_get_tipp[Tore2]) && $tor1 > -1) { // nur korrekte Differenz
 	            $points=$ausgabe[Punkte_korrekte_Tore];//$points=2;
-                }
-                else
-                    //Wenn immerhin der Sieger korrekt getippt wurde
-                    if (($tor1 > $tor2 && $ausgabe_get_tipp[Tore1] > $ausgabe_get_tipp[Tore2]) || ($tor1 < $tor2 && $ausgabe_get_tipp[Tore1] < $ausgabe_get_tipp[Tore2]))
-                    {
+            } else if (($tor1 > $tor2 && $ausgabe_get_tipp[Tore1] > $ausgabe_get_tipp[Tore2]) || ($tor1 < $tor2 && $ausgabe_get_tipp[Tore1] < $ausgabe_get_tipp[Tore2])) { // nur korrekter Sieger
                 $points=$ausgabe[Punkte_korrekter_Sieger];//$points =1;
-                    }
-                    else
-                        $points = 0;
+            } else { // alles falsch getippt
+              $points = 0;
+            }
+
+            if ($testausgabe) {
+              print "Ergebnis: $points Punkte<br>";
+						}
 
             //errechnete points in Tipp speichern            
             $Tipp_Points_Update = "UPDATE tipp SET TippPunkte=$points WHERE SPIEL_ID=$ausgabe_get_gameID[SPIEL_ID] AND USER_ID=$ausgabe_get_tipp[USER_ID]";
@@ -109,9 +116,7 @@ if ($submit == " Eintragen ") {
             $Game_Points=$points * $ausgabe_get_tipp[Faktor];
             $Game_Points_Update = "UPDATE tipp SET SpielPunkte=$Game_Points WHERE SPIEL_ID=$ausgabe_get_gameID[SPIEL_ID] AND USER_ID=$ausgabe_get_tipp[USER_ID]";
             mysql_query($Game_Points_Update);
-            
-                
-            
+                       
             /************************************************************************************
             Die Summe der Spielpunkte plus MeisterTippPunkte in Gesamtpunkte des Users speichern
             *************************************************************************************/
@@ -121,7 +126,10 @@ if ($submit == " Eintragen ") {
             $calc_pointsum=mysql_query($calc_sum);
             $data = mysql_fetch_array($calc_pointsum);
             $totalpoints =  $data[total];
-            
+
+            if ($testausgabe) {
+              print "totalpoints = $totalpoints<br>";
+						}
             
             //MeisterTippPunkte holen und draufaddieren (waehrend dem Turnier immer = 0)
             $MeisterPoints=("SELECT MeisterTippPunkte FROM user WHERE USER_ID=$ausgabe_get_tipp[USER_ID]");
@@ -129,14 +137,14 @@ if ($submit == " Eintragen ") {
             $data = mysql_fetch_array($get_MeisterPoints);
             
             $totalpoints = $totalpoints + $data[MeisterTippPunkte];
-            
+            if ($testausgabe) {
+              print "totalpoints (inkl. Meistertipp) = $totalpoints<br>";
+							print "=====================================================================================================<br>";
+						}
                         
             // neue Variante: Gesamtpunkte immer neu SETTEN//                
             $Total_Points_Update = "UPDATE user SET TotalPoints=$totalpoints WHERE USER_ID=$ausgabe_get_tipp[USER_ID]";
             mysql_query($Total_Points_Update);
-            
-            
-            
 
         }   //End of while ($ausgabe_get_tipp ...
 
