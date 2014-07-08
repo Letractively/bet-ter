@@ -11,6 +11,9 @@ require "general_methods.inc.php";
 require "connect.inc.php";
 check_session(true, array(), array("admin"));
 
+// 'submit' gedrueckt?
+$submit  =  $_POST["submit"];
+
 /************
 Anfrage zur Ermittlung des MEISTERNAMENS !
 *************/
@@ -123,7 +126,7 @@ else
     $count = 0;
     //Hole alle Spiele, die (datumsbezogen) noch in der Zukunft liegen    
     $db_get_games="SELECT SPIEL_ID
-               FROM spiel  WHERE DATE_FORMAT( Datum,  '%Y-%m-%d'  )  > DATE_ADD( CURDATE(  ) ,  INTERVAL  -0 DAY  )";
+                   FROM spiel  WHERE DATE_FORMAT( Datum,  '%Y-%m-%d'  )  > \"$heute\"";
     $gamescount = mysql_query($db_get_games);
     
     //zaehle alle geholten SPiele

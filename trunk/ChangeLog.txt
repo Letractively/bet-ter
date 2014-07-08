@@ -232,7 +232,31 @@ better-0.9.5
 	    - no huge if-else-blocks anymore, but a fix place where to print errors (if any) or the initial string, respectively. 
 	- Removed all "Zurueck"-Links (not necessary anymore - the menu is always displayed!).
 	- Removed templates/Menue.php (replaced by Menue_*.php files).
+  - view_gametipps.php: Displaying list of tipps sorted by user name.
+
+  - set_result.php:
+      - critcal bugfix: 
+          When somebody did not tipp, he could still get points when the result was x:x.
+          Reason: The initial entries "Tore1:Tore2" = "99:99" were not explicitely checked when calculating the	points.
+
+	- meistertipp.php:
+	    - critical bugfix: 
+			    The variable $time was erroneously not used when querying whether the tournament winner could be set or not.
+					Therefore, one could bet the winner the whole day of the first K.O. game, not until the start of the first game.
+					Fixed by using the correct variable.
 	
+	- set_meister.php:
+	    - replaced CURDATE() call with $heute (=today()). Target: use the date of today() everywhere, so we can test certain
+			  days very easily.
+
+better-0.9.6
+-------------
+  - setup.php: Removed useless trailing "<p>" from created connect.inc.php string.
+  - Bugfix in set_meister.php:
+      - $submit was not explicitely read from $_PUT, so it was not set. --> "Submit" button did not work.
+			
+
+			  
 ===========================================================================================================
 TO DO:
   - Folgendes in setup.php abfragen und in die Anmeldungsmail (mitmachen.php) einbauen:
@@ -257,6 +281,7 @@ TO DO:
 			- Rangliste / R. mit Abstand / Gewinnverteilung zusammenfassen (dann nur 1 Menüpunkt)
 			- globale defines in global_defs.inc.php definieren (z.B. $testausgabe.)
 			- "Zurück"-Seiten raus
+			- Neue Seite "Tipps von..." (die dann angezeigt ist, wenn man beim Ranking auf den Link klickt)
       - 02.07.2014 - sb : eine Seite wie "meine Entwicklung" erstellen und einbauen, die dem User eine Übersicht gibt, die eigene Platzierung im Turnierverauf zu sehen. Idealerweise als GRAPH, als Loesung moeglich: google charts 
       https://developers.google.com/chart/?hl=de
       

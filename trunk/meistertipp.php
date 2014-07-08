@@ -8,8 +8,8 @@ check_session(true, array(), array(), array("Gast", "admin"));
 Anfrage zur Ermittling des MEISTERNAMENS und 
 der spaetesten Tippabgabe !
 */
-$dbanfrage = "	SELECT Meistername, Meister_Tipp_Date, Meister_Tipp_Time
-			FROM settings ";                
+$dbanfrage = "SELECT Meistername, Meister_Tipp_Date, Meister_Tipp_Time
+              FROM settings ";                
 $result  = mysql_db_query ($dbName, $dbanfrage, $connect);
 $ausgabe = mysql_fetch_array ($result);
 		
@@ -81,8 +81,8 @@ if ($_POST['submit'] == " Absenden ")
 
 	print("<table width=\"50%\" bgcolor=\"#000000\" border=\"0\" cellpadding=\"5\" cellspacing=\"1\" align=\"center\">");
 	print ("<th bgcolor=\"#e7e7e7\" align=\"center\" colspan=\"0\">
-				 $user, Dein $ausgabe[Meistername]-Tipp wurde gespeichert.<br>Danke fürs Tippen!<br>");
-	print("Viel Glück!<br></th>");
+				 $user, Dein $ausgabe[Meistername]-Tipp wurde gespeichert.<br>Danke f&uuml;rs Tippen!<br>");
+	print("Viel Gl&uuml;ck!<br></th>");
 	print("</table>");
 	print("<br><hr><br><br>");
 }
@@ -103,13 +103,14 @@ else
 		print("<h3 align=\"center\"> Dein Tipp: $ausgabeMT[Name] wird $ausgabe[Meistername].
 					<br> <img src=\"flags/$ausgabeMT[MeisterTipp].gif\" alt=\"$ausgabeMT[MeisterTipp]\">
 					</h3>");
-		$Bezeichnung = "Ändern in";
+		$Bezeichnung = "&Auml;ndern in";
 	}
 	
 	/*************************************************
 	** 	Wenn noch getippt werden darf (Anpfiff)	**
 	**************************************************/
-	if (($heute < $tippdate) || ($heute == $tippdate && $uhrzeit < $tipptime))
+
+	if (($heute < $tippdate) || ($heute == $tippdate && $time < $tipptime))
 	{
 		$db_getTeams = "SELECT TEAM_ID, Name 
 		                FROM team 
@@ -129,7 +130,7 @@ else
 		}
 		print ("</p> </SELECT>");
 
-		print("<br><br><br><b>Späteste Tippabgabe: $ausgabedatum um $ausgabezeit Uhr </b><br><br>");
+		print("<br><br><br><b>Sp&auml;teste Tippabgabe: $ausgabedatum um $ausgabezeit Uhr </b><br><br>");
 		print('<input type="submit" name="submit" value=" Absenden ">
 					</form>');
 	}

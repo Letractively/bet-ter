@@ -148,7 +148,7 @@ if (isset($_POST['submit']) && $err === true) {
 	$ausgabe    = mysql_fetch_array ($Ergebnis);
 	$adminsmail = $ausgabe['EMail'];
 
-	$Befehl2    = "SELECT `Datum`,`Anpfiff` FROM `spiel` ORDER BY 'Datum','Anpfiff' LIMIT 1";
+	$Befehl2    = "SELECT `Datum`,`Anpfiff` FROM `spiel` ORDER BY Datum ASC, Anpfiff ASC LIMIT 1";
 	$Ergebnis2  = mysql_db_query ($dbName, $Befehl2, $connect);
 	$ausgabe2   = mysql_fetch_array ($Ergebnis2);
 	$startDatum = $ausgabe2['Datum'];
@@ -161,6 +161,9 @@ if (isset($_POST['submit']) && $err === true) {
 	$fullLatestReg = timestamp_to_full_date($latestReg);
 
   if ($testausgabe) {
+		print "startDatum = ". $startDatum . "<br>";
+		print "startZeit  = ". $startZeit . "<br>";
+		
     print "fullStartDatum = ". $fullStartDatum. "<br>";
     print "latestReg = ". timestamp_to_full_date($fullStartDatum). "<br>";
 		print "fullLatestReg = ". $fullLatestReg. "<br>";
@@ -233,6 +236,12 @@ Dein Admin ;)
   $text_user = str_replace("%turnier_start%", $start        , $text_user); // ersetzte %turnier_start%
   $text_user = str_replace("%latest_reg%"   , $fullLatestReg, $text_user); // ersetzte %latest_reg%	
   mail($mail, "Dein Einsatz", $text_user);
+   
+	print ("<h5>");
+	echo '<br><p align="center">Formular wurde erfolgreich versandt!<br>';
+	print("Der Adminstrator wird mit Dir ueber $_POST[mail] Kontakt aufnehmen<br><br>");
+	print("</h5>");
+	print("<br><br> <a href=\"index.php\">Zurück zur Startseite</a><br>");
 }
 
 ?>
