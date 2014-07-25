@@ -257,7 +257,7 @@ better-0.9.6
 			
 
 better-0.9.7
--------------
+--------------
   - setup.php,
     admin_settings.php,
     mitmachen.php      : Added new entries for settings data base (Admin-Konto stuff, Einsatz, Nur_Bar).
