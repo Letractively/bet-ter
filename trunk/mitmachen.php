@@ -155,7 +155,16 @@ if (isset($_POST['submit']) && $err === true) {
   $startZeit  = $ausgabe2['Anpfiff'];	
 	$start      = date_time_to_full_date($startDatum, $startZeit);
 
-	// spätester Zeitpunkt zum Registrieren: Anpfiff - 1 Tag (also genau 24h vorher)
+	$Befehl3    = "SELECT `Admin_Vorname`,`Admin_Nachname`, `Admin_IBAN`, `Admin_BIC`, `Nur_Bar`, `Einsatz` FROM `settings`";
+	$Ergebnis3  = mysql_db_query ($dbName, $Befehl3, $connect);
+	$ausgabe3   = mysql_fetch_array ($Ergebnis3);
+  $admin_vorname = $ausgabe3['Admin_Vorname'];
+  $admin_name    = $ausgabe3['Admin_Nachname'];
+  $admin_bic     = $ausgabe3['Admin_BIC'];
+  $admin_iban    = $ausgabe3['Admin_IBAN'];
+  $nurBar        = $ausgabe3['Nur_Bar'];
+  $einsatz       = $ausgabe3['Einsatz'];
+	// spaetester Zeitpunkt zum Registrieren: Anpfiff - 1 Tag (also genau 24h vorher)
   $fullStartDatum = date_to_timestamp($startDatum. " ". $startZeit);
   $latestReg = add_date($fullStartDatum, 0, 0, -1, 0, 0, 0);
 	$fullLatestReg = timestamp_to_full_date($latestReg);
@@ -185,7 +194,10 @@ if (isset($_POST['submit']) && $err === true) {
 	$weg = strrchr($url,"/"); //eigene PHP-Datei loeschen, damit auf index verwiesen wird
 	$url = str_replace($weg,"",$url);
 		
+  // FIXME!!! Translate usernames to correct ASCII codes and back!
+  // Below, users with German Umlauts will not work, for instance!!!
   
+  // Mail an Admin: User eintragen
   $text="Neuer User will mitmachen \n
   	Vorname: $vorname \n
   	Name: $name \n
@@ -202,15 +214,16 @@ if (isset($_POST['submit']) && $err === true) {
    
   mail($adminsmail, "neuer user: $username", $text);
 	
-	/* FIXME!!! 
-	   Hier die Admin-Daten aus der DB auslesen:
-	     - Vorname + Name
-		 - Betrag
-		 - BLZ (opt.)
-		 - KTN (opt.)
-		 - spätester Anmeldezeitpunkt + Turnierbeginn
-		Wenn Kontodaten nicht angegeben, Text unten anpassen: "..in bar geben."
-	*/
+  // Mail an User: Freischaltungs- und Bezahl-Hinweise, Admin-Kontaktdaten etc.
+  $text_konto = 
+"Du kannst ihm den Einsatz entweder in bar geben oder überweisen an:\n
+  $admin_vorname $admin_nachname
+  BLZ/BIC : $admin_bic
+  KTN/IBAN: $admin_iban
+  Betrag  : $einsatz Euro
+  Verwendungszweck: $username";
+
+  $text_bar = "Bitte gib ihm den Einsatz in bar.";  
 		
 	$text_user = "
 Hallo $vorname,\n
@@ -218,12 +231,7 @@ um Deinen beTTer-Account freischalten zu lassen, musst Du dem Administrator noch
 Deinen Einsatz zukommen lassen, und zwar bis zum %latest_reg%. 
 Turnierbeginn ist am %turnier_start%. 
 
-Du kannst ihm den Einsatz entweder in bar geben oder überweisen an:\n
-  Manuel Kleefuß
-  BLZ: 67291700
-  KTN: 25745701
-  Betrag: 10 Euro
-  Verwendungszweck: $username
+%text_bezahlung%
 
 Bei Fehlangaben bekommst Du Deinen Einsatz zurück, kannst aber nicht teilnehmen.	
 Du kannst über folgende Adresse mit dem Administrator Kontakt aufnehmen:
@@ -233,8 +241,16 @@ Viel Erfolg bei beTTer wünscht Dir
 Dein Admin ;)
 ";
 
+  // Replace all %such_fields% with proper text
   $text_user = str_replace("%turnier_start%", $start        , $text_user); // ersetzte %turnier_start%
   $text_user = str_replace("%latest_reg%"   , $fullLatestReg, $text_user); // ersetzte %latest_reg%	
+
+  if ($nurBar) {
+		$text_user = str_replace("%text_bezahlung%", $text_bar  , $text_user); // ersetze %text_bezahlung%
+  } else {
+		$text_user = str_replace("%text_bezahlung%", $text_konto, $text_user); // ersetze %text_bezahlung%
+  }
+
   mail($mail, "Dein Einsatz", $text_user);
    
 	print ("<h5>");
