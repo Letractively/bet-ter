@@ -79,9 +79,9 @@ if(!isset($_POST['submit'])) {
 </table>
 
 <p><span class="Stil3">Hinweis:</span><br>
-  Ihre Daten werden in der Datei <strong>connect.inc.php</strong> abgelegt und koennen dort von Ihnen jederzeit angepasst werden.<br>
-  Beachten Sie in den folgenden Schritten, welche Möglichkeiten Ihnen die Datei <strong>setup.php</strong> bietet! <br>
-  Sie werden nach dem letzten Schritt darauf hingewiesen, die Datei <strong>setup.php</strong> aus Sicherheitsgruenden zu l&ouml;schen! </p>
+  Ihre Daten werden in der Datei <strong>connect.inc.php</strong> abgelegt und k&ouml;nnen dort von Ihnen jederzeit angepasst werden.<br>
+  Beachten Sie in den folgenden Schritten, welche M&ouml;glichkeiten Ihnen die Datei <strong>setup.php</strong> bietet! <br>
+  Sie werden nach dem letzten Schritt darauf hingewiesen, die Datei <strong>setup.php</strong> aus Sicherheitsgr&uuml;nden zu l&ouml;schen! </p>
 
 </form> 
 
@@ -104,7 +104,7 @@ $text="<?php
 \$dbPass = \"$_POST[Pass]\";
 \$dbName = \"$_POST[DB]\";
 \$connect = @mysql_connect(\$dbHost, \$dbUser, \$dbPass) or die(\"Konnte keine Verbindung zum Datenbankserver aufbauen!\");
-\$selectDB = @mysql_select_db(\$dbName, \$connect) or die(\"Konnte die Datenbank <b>$dbName</b> nicht auswählen!\");
+\$selectDB = @mysql_select_db(\$dbName, \$connect) or die(\"Konnte die Datenbank <b>$dbName</b> nicht ausw&auml;hlen!\");
 ?>";
 ?>
 <?php 
@@ -113,7 +113,7 @@ fwrite($fp,$text);
 fclose($fp);
 
 print("<br><br><p align=\"center\">Ihre Daten wurden in der Datei <strong>connect.inc.php</strong>
-abgelegt und können dort von Ihnen jederzeit angepasst werden.<br>
+abgelegt und k&ouml;nnen dort von Ihnen jederzeit angepasst werden.<br>
 
 <br><br>");
 print('<br><br>
@@ -125,8 +125,8 @@ print('<br><br>
   <br>
   WICHTIG:<br>
   Durch Anklicken des Buttons <b>Datenbank-Struktur anlegen</b> wird versucht, die Datenbank-Struktur mit Hilfe der von Ihnen eingegebenen Daten anzulegen.<br>
-  Falls Sie Fehlermeldungen erhalten, die die Verbindung zur Datenbank betreffen, wählen Sie zweimal den ZUR&Uuml;CK - Button Ihres Browsers, um die Zugangsdaten anzupassen.</p>
-<p>Folgende Struktur wird versucht werden anzulegen: (Sie können dies auch von Hand tun): <br>
+  Falls Sie Fehlermeldungen erhalten, die die Verbindung zur Datenbank betreffen, w&auml;hlen Sie zweimal den ZUR&Uuml;CK - Button Ihres Browsers, um die Zugangsdaten anzupassen.</p>
+<p>Folgende Struktur wird versucht werden anzulegen: (Sie k&ouml;nnen dies auch von Hand tun): <br>
 - eine Datenbank deren Name in der Datei connect.inc.php unter dbName angegeben sein muss</p>
 <blockquote>
   <p><br>
@@ -141,7 +141,11 @@ print('<br><br>
     - Punkte_korrekter_Tipp<br>
     - Punkte_korrekte_Tore<br>
     - Punkte_korrekter_Sieger<br>
-    - Meistername</p>
+    - Meistername<br>
+    - Admin-Daten: Vor- und Nachname, Kontodaten<br>
+		- nur Barzahlung oder auch &Uuml;berweisung erlauben<br>
+    - Wetteinsatz
+    </p>
   </blockquote>
   <p>- Tabelle "spiel" mit folgenden Spalten</p>
   <blockquote>
@@ -222,6 +226,12 @@ $table="settings";
 	  Punkte_korrekte_Tore smallint(6) NOT NULL default '0',
 	  Punkte_korrekter_Sieger smallint(6) NOT NULL default '0',
 	  Meistername text NOT NULL,
+	  Admin_Vorname text NOT NULL,
+	  Admin_Nachname text NOT NULL,
+	  Admin_IBAN text,
+	  Admin_BIC text,
+		Nur_Bar BOOLEAN default '0',
+    Einsatz DOUBLE default '10',
 	  PRIMARY KEY  (ID)
 	) AUTO_INCREMENT=2 ;
 	";
@@ -355,12 +365,12 @@ require "connect.inc.php";
 print("<form action=\"$PHP_SELF\" method=\"post\">");
 
 print("<p align =\"center\"><span class=\"Stil3\">Administrator anlegen</span><br></p>");
-print("Der Administrator hat als einziger(!) die Rechte, um Spiele und User anzulegen, diese wieder zu löschen, Spielergebnisse einzutragen  usw...<br>");
+print("Der Administrator hat als einziger(!) die Rechte, um Spiele und User anzulegen, diese wieder zu l&ouml;schen, Spielergebnisse einzutragen  usw...<br>");
 print("Der Login des Administrators ist \"admin\" und ein nun von Ihnen bestimmtes Passwort.<br>
-	Zusätzlich wird eine gültige E-Mail-Adresse benötigt, um einerseits den Usern die Möglichkeit zu geben, mit Ihnen in Kontakt zu treten,
-	und um Ihnen andererseits ein neu generiertes Passwort zuschicken zu können, falls Sie es vergessen haben sollten.<br><br>");
+	Zus&auml;tzlich wird eine g&uuml;ltige E-Mail-Adresse ben&ouml;tigt, um einerseits den Usern die M&ouml;glichkeit zu geben, mit Ihnen in Kontakt zu treten,
+	und um Ihnen andererseits ein neu generiertes Passwort zuschicken zu k&ouml;nnen, falls Sie es vergessen haben sollten.<br><br>");
 
-print("Passwort für \"admin-Account\": ");
+print("Passwort f&uuml;r \"admin-Account\": ");
 print('<input type="text" name="AdminPass" size="20" class="input" value=""><br><br>');
 
 print("E-Mail-Adresse des Administrators: ");
@@ -369,7 +379,7 @@ print('<input type="text" name="AdminMail" size="20" class="input" value=""><br>
 /*BUTTON*/
 print('<br><input type="submit" name="submit" value="Administrator speichern" class="button">');
 
-print("<br><br> Hinweis: <br>Diese Daten können Sie jederzeit nach erfolgreichem LogIn unter \"Meine Daten\" ändern!");
+print("<br><br> Hinweis: <br>Diese Daten k&ouml;nnen Sie jederzeit nach erfolgreichem LogIn unter \"Meine Daten\" &auml;ndern!");
 print('</form>');
 }// End Of ADMIN ANLEGEN
 
@@ -399,17 +409,17 @@ $update = mysql_query($update_query);
  }
  else 
  {
- 	print("<br> <p align=\"center\">- Der Benutzer \"admin\" ist bereits vorhanden ... <br> - keine Änderungen am admin-Account vorgenommen -</p><br>");
+ 	print("<br> <p align=\"center\">- Der Benutzer \"admin\" ist bereits vorhanden ... <br> - keine &Auml;nderungen am admin-Account vorgenommen -</p><br>");
 	$admin = 1;
  }
  	/* USER_ID des admins der Uebersicht wegen auf 0 setzen !*/
 	$update_admin_ID = "UPDATE user SET USER_ID=0 WHERE user='admin'";
 	$update = mysql_query($update_admin_ID);
 	
-print('<br><br>Es wird nun überprüft, ob bereits ein "Gast-Account" existiert.<br>
-		Über den "Gast-Account" hat jeder die Möglichkeit, mal in Ihre Tipprunde reinzuschauen, ohne eigene Tipps abgeben zu dürfen<br>
-		Als eingeloggter "Gast" ist es auch möglich, sich beim Administrator für einen "echten" User-Account anzumeldn.<br>
-		Der Login für den Gast ist:<br>
+print('<br><br>Es wird nun &uuml;berpr&uuml;ft, ob bereits ein "Gast-Account" existiert.<br>
+		&Uuml;ber den "Gast-Account" hat jeder die M&ouml;glichkeit, mal in Ihre Tipprunde reinzuschauen, ohne eigene Tipps abgeben zu d&uuml;rfen<br>
+		Als eingeloggter "Gast" ist es auch m&ouml;glich, sich beim Administrator f&uuml;r einen "echten" User-Account anzumeldn.<br>
+		Der Login f&uuml;r den Gast ist:<br>
 		Benutzername: Gast<br>
 		Passwort: gast
 		<br><br><br>');	
@@ -432,7 +442,7 @@ if ($Anzahl_GAESTE == 0)
  }
  else 
  {
- 	print("<br> <p align=\"center\">- Der Benutzer \"Gast\" ist bereits vorhanden ... <br> - keine Änderungen am Gast-Account vorgenommen -</p><br>");
+ 	print("<br> <p align=\"center\">- Der Benutzer \"Gast\" ist bereits vorhanden ... <br> - keine &Auml;nderungen am Gast-Account vorgenommen -</p><br>");
 	$gast=1;
  }
 
@@ -459,11 +469,11 @@ print('<br><br><p align="center">
 		
 		print("<br><br>");
 
-print('<br> Sie haben in den letzten Schritten gesehen, welche Möglichkeiten die Datei <b>"setup.php"</b> bietet.<br>
-Da diese Datei nicht davor geschützt ist, von Unbefugten zu denselben Zwecken genutzt zu werden, empfehlen wir <b>dringend</b> diese Datei zu löschen oder an einen Ort zu verschieben, wo sie nicht vom Browser aus aufgerufen werden kann!<br>
-Wenn Sie diesen Rat nicht befolgen, stellt dies ein erhöhtes Sicherheitsrisiko für Ihre Tipprunde dar!<br><br>');
+print('<br> Sie haben in den letzten Schritten gesehen, welche M&ouml;glichkeiten die Datei <b>"setup.php"</b> bietet.<br>
+Da diese Datei nicht davor gesch&uuml;tzt ist, von Unbefugten zu denselben Zwecken genutzt zu werden, empfehlen wir <b>dringend</b> diese Datei zu l&ouml;schen oder an einen Ort zu verschieben, wo sie nicht vom Browser aus aufgerufen werden kann!<br>
+Wenn Sie diesen Rat nicht befolgen, stellt dies ein erh&ouml;htes Sicherheitsrisiko f&uuml;r Ihre Tipprunde dar!<br><br>');
 
-print("<br> <a href=\"del_setup.php\">Klicken Sie auf diese Zeile, wenn Sie die Datei jetzt löschen lassen wollen! [Empfohlen!]</a><br><br>");
+print("<br> <a href=\"del_setup.php\">Klicken Sie auf diese Zeile, wenn Sie die Datei jetzt l&ouml;schen lassen wollen! [Empfohlen!]</a><br><br>");
 } // End Of Admin speichern
 
 ?> 

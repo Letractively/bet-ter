@@ -256,6 +256,15 @@ better-0.9.6
       - $submit was not explicitely read from $_PUT, so it was not set. --> "Submit" button did not work.
 			
 
+better-0.9.7
+-------------
+  - setup.php,
+    admin_settings.php,
+    mitmachen.php      : Added new entries for settings data base (Admin-Konto stuff, Einsatz, Nur_Bar).
+                         These entries will be used in mitmachen.php when the mail to a possible new user is sent.
+			 Also replaced several German Umlauts with the proper HTML codes.
+			
+
 			  
 ===========================================================================================================
 TO DO:

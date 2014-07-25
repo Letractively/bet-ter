@@ -41,14 +41,23 @@ if (isset($_POST['submit']))
 	$Punkte_korrekter_Tipp	= $_POST[Punkte_korrekter_Tipp];   
 	$Punkte_korrekte_Tore	= $_POST[Punkte_korrekte_Tore];   
 	$Punkte_korrekter_Sieger= $_POST[Punkte_korrekter_Sieger];   
+	$Admin_Vorname           = $_POST[Admin_Vorname];
+	$Admin_Nachname          = $_POST[Admin_Nachname];
+	$Admin_BIC               = $_POST[Admin_BIC];
+	$Admin_IBAN              = $_POST[Admin_IBAN];
+	$cash_only               = $_POST[cash_only];
+	$Einsatz                 = $_POST[Einsatz];
 
+  $Einsatz_arr = preg_split("/[^\d]+/", $Einsatz, -1, PREG_SPLIT_NO_EMPTY);
+	$Einsatz = implode(".", $Einsatz_arr);
+	dump ($Einsatz_arr);
+  echo "Einsatz = $Einsatz<br>";
    /******************************************************************************
    ** Pruefen, ob Anzahl Faktorpunkte mindestens GLEICH Anzahl SPiele ist, sonst:
    ** Anzahl Faktorpunkte GLEICH Anz. SPiele setzen!
    ******************************************************************************/
    //Wieviele Spiele sind jetzt eingetragen:
-	$dbanfrage_SP = "SELECT COUNT(*)
-					FROM spiel";
+	$dbanfrage_SP = "SELECT COUNT(*) FROM spiel";
 	$result_SP	  = mysql_db_query ($dbName, $dbanfrage_SP, $connect);
 	$ausgabe_SP	  = mysql_fetch_array ($result_SP);	
 	$Anzahl_Spiele = $ausgabe_SP[0];
@@ -57,6 +66,7 @@ if (isset($_POST['submit']))
 	{
 		$Anzahl_Faktorpunkte = $Anzahl_Spiele;
 	}
+	$nurBar = ($cash_only)? 1 : 0;
    
     $SettingsUpdate = "UPDATE settings SET 
 						Turniername='$Turniername',
@@ -67,7 +77,13 @@ if (isset($_POST['submit']))
 						Anzahl_Faktorpunkte='$Anzahl_Faktorpunkte',
 						Punkte_korrekter_Tipp='$Punkte_korrekter_Tipp',
 						Punkte_korrekte_Tore='$Punkte_korrekte_Tore',
-						Punkte_korrekter_Sieger='$Punkte_korrekter_Sieger'						
+						Punkte_korrekter_Sieger='$Punkte_korrekter_Sieger',
+						Admin_Vorname='$Admin_Vorname',
+						Admin_Nachname='$Admin_Nachname',
+						Admin_BIC='$Admin_BIC',
+						Admin_IBAN='$Admin_IBAN',
+						Nur_Bar='$nurBar',
+						Einsatz='$Einsatz' 
 						WHERE ID='$ID' ";
 
 	$SettingsInsert= "INSERT INTO settings SET 
@@ -79,9 +95,14 @@ if (isset($_POST['submit']))
 						Anzahl_Faktorpunkte='$Anzahl_Faktorpunkte',
 						Punkte_korrekter_Tipp='$Punkte_korrekter_Tipp',
 						Punkte_korrekte_Tore='$Punkte_korrekte_Tore',
-						Punkte_korrekter_Sieger='$Punkte_korrekter_Sieger'						
+						Punkte_korrekter_Sieger='$Punkte_korrekter_Sieger',
+						Admin_Vorname='$Admin_Vorname',
+						Admin_Nachname='$Admin_Nachname',
+						Admin_BIC='$Admin_BIC',
+						Admin_IBAN='$Admin_IBAN',
+						Nur_Bar='$nurBar',
+						Einsatz='$Einsatz'
 						";
-						
 
 	mysql_query($SettingsUpdate); 
     //Wenn keine Zele betroffen von UPDATE (weil Datensatz nicht vorhanden)
@@ -232,10 +253,36 @@ else
 			</td>		
 		</tr>
 		<tr>
-			<td>&nbsp;</td>
+  		<td>
+				Wetteinsatz (in Euro) (EE[.CC], z.B. 10 oder 11.50 etc.)<br>
+				<input name="Einsatz" type="text" value="<?php echo sprintf("%.2f", $ausgabe[Einsatz]); ?>" size="15" maxlength="5">
 			<td>
 				Punkte, die ein Spieler für einen korrekt getippten Sieger erh&auml;lt: (Standard: 1)<br>
 				<input name="Punkte_korrekter_Sieger" type="text" value="<?php echo	$ausgabe[Punkte_korrekter_Sieger]; ?>" size="10" maxlength="120">
+			</td>
+		</tr>
+		<tr><td colspan="2" align="center"><b>Administrator-Daten (u.a. f&uuml;r Anmelde-Mails)</b></td></tr>
+		<tr>
+			<td colspan="2" align="left">
+				<input type="checkbox" name="cash_only" value="cash_only" <?php if ($ausgabe[Nur_Bar]) print "checked"; ?>> nur Barzahlung erlauben (die unten stehenden Felder sind damit irrelevant)
+			</td>
+		</tr>
+		<tr>
+  		<td>
+				<b>Vorname</b> des Administrators (und Kontoinhabers)<br>
+				<input name="Admin_Vorname" type="text" value="<?php echo $ausgabe[Admin_Vorname]; ?>" size="15" maxlength="120">
+			<td>
+				Kontonummber bzw. IBAN des Administrator-Kontos<br>
+				<input name="Admin_IBAN" type="text" value="<?php echo	$ausgabe[Admin_IBAN]; ?>" size="15" maxlength="120">
+			</td>
+		</tr>
+		<tr>
+  		<td>
+				<b>Nachname</b> des Administrators (und Kontoinhabers)<br>
+				<input name="Admin_Nachname" type="text" value="<?php echo $ausgabe[Admin_Nachname]; ?>" size="15" maxlength="120">
+			<td>
+				Bankleitzahl bzw. BIC des Administrator-Kontos<br>
+				<input name="Admin_BIC" type="text" value="<?php echo	$ausgabe[Admin_BIC]; ?>" size="15" maxlength="120">
 			</td>
 		</tr>
 	</table>
