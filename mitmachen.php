@@ -158,13 +158,14 @@ if (isset($_POST['submit']) && $err === true) {
 	$Befehl3    = "SELECT `Admin_Vorname`,`Admin_Nachname`, `Admin_IBAN`, `Admin_BIC`, `Nur_Bar`, `Einsatz` FROM `settings`";
 	$Ergebnis3  = mysql_db_query ($dbName, $Befehl3, $connect);
 	$ausgabe3   = mysql_fetch_array ($Ergebnis3);
-  $admin_vorname = $ausgabe3['Admin_Vorname'];
-  $admin_name    = $ausgabe3['Admin_Nachname'];
-  $admin_bic     = $ausgabe3['Admin_BIC'];
-  $admin_iban    = $ausgabe3['Admin_IBAN'];
-  $nurBar        = $ausgabe3['Nur_Bar'];
-  $einsatz       = $ausgabe3['Einsatz'];
-	// spaetester Zeitpunkt zum Registrieren: Anpfiff - 1 Tag (also genau 24h vorher)
+  $admin_vorname  = $ausgabe3['Admin_Vorname'];
+  $admin_nachname = $ausgabe3['Admin_Nachname'];
+  $admin_bic      = $ausgabe3['Admin_BIC'];
+  $admin_iban     = $ausgabe3['Admin_IBAN'];
+  $nurBar         = $ausgabe3['Nur_Bar'];
+  $einsatz        = $ausgabe3['Einsatz'];
+
+  // spaetester Zeitpunkt zum Registrieren: Anpfiff - 1 Tag (also genau 24h vorher)
   $fullStartDatum = date_to_timestamp($startDatum. " ". $startZeit);
   $latestReg = add_date($fullStartDatum, 0, 0, -1, 0, 0, 0);
 	$fullLatestReg = timestamp_to_full_date($latestReg);
@@ -194,8 +195,10 @@ if (isset($_POST['submit']) && $err === true) {
 	$weg = strrchr($url,"/"); //eigene PHP-Datei loeschen, damit auf index verwiesen wird
 	$url = str_replace($weg,"",$url);
 		
-  // FIXME!!! Translate usernames to correct ASCII codes and back!
-  // Below, users with German Umlauts will not work, for instance!!!
+  // URL-encode username and password. Otherwise, e.g. German Umlauts will be interpreted correctly when clicking on the link!
+  // Note: urldecode happens automatically in all current browsers.
+  $url_username = urlencode($username);
+  $url_pass     = urlencode($pass);
   
   // Mail an Admin: User eintragen
   $text="Neuer User will mitmachen \n
@@ -208,7 +211,7 @@ if (isset($_POST['submit']) && $err === true) {
 	(Hier geht's zum Login: $url)
 	\n\n
 	kannst Du zum Anlegen dieses Users auch einfach den folgenden Link anklicken:\n
-	$url/neu.php?username=$username&password=$pass&password2=$pass&email=$mail&submit=Benutzer+anlegen
+  $url/neu.php?username=$url_username&password=$url_pass&password2=$url_pass&email=$mail&submit=Benutzer+anlegen
 	\n 
  Andernfalls trage die oben angegebenen Daten in dem Formular \"Neuen User anlegen\" ein.";
    
@@ -255,9 +258,8 @@ Dein Admin ;)
    
 	print ("<h5>");
 	echo '<br><p align="center">Formular wurde erfolgreich versandt!<br>';
-	print("Der Adminstrator wird mit Dir ueber $_POST[mail] Kontakt aufnehmen<br><br>");
+	print("Der Adminstrator wird mit Dir &uuml;ber $_POST[mail] Kontakt aufnehmen.<br><br>");
 	print("</h5>");
-	print("<br><br> <a href=\"index.php\">Zurück zur Startseite</a><br>");
 }
 
 ?>
