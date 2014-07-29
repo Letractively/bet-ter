@@ -303,7 +303,7 @@ function check_session($need_reg, $users_reloc=array(), $users_yes=array(), $use
 	session_start();
   if (!$need_reg) return;
 	
-  $user = $_SESSION['user'];
+  $user = strtolower($_SESSION['user']);
 
   // nur Eingeloggte zulassen
   if(!isset($_SESSION['user']) || $user == "") {
@@ -312,15 +312,15 @@ function check_session($need_reg, $users_reloc=array(), $users_yes=array(), $use
 
   // Weiterzuleitende user weiterleiten
   foreach ($users_reloc as $reloc) {
-    if ($user == $reloc) {
-      relocate(strtolower("$user.php"));
+    if ($user == strtolower($reloc)) {
+      relocate("$user.php");
     }
   }
 
   // Nur zulässige user akzeptieren
   $found_ok = false;
   foreach ($users_yes as $yes) {
-    if ($user == $yes) {
+    if ($user == strtolower($yes)) {
       $found_ok = true;
       break;
     }
@@ -332,7 +332,7 @@ function check_session($need_reg, $users_reloc=array(), $users_yes=array(), $use
 
   // Unzulässige user verbieten
   foreach ($users_no as $no) {
-    if ($user == $no) {
+    if ($user == strtolower($no)) {
 	    relocate("index.php");
     }
   }
@@ -408,7 +408,8 @@ function create_menu($user="", $entries=array(), $kats=array()) {
 //  $user     : der zu übersetzende user.
 // -------------------------------------------------------------------------------------------
 function user_to_menu_user($user) {
-  if ($user == "Gast" || $user == "admin") return $user;
+  if (strtolower($user) == "gast")  return "Gast";
+  if (strtolower($user) == "admin") return "admin";
   return "user"; // all other users are default, which is simply called "user"
 }
 

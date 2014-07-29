@@ -264,7 +264,19 @@ better-0.9.7
                          These entries will be used in mitmachen.php when the mail to a possible new user is sent.
 			 Also replaced several German Umlauts with the proper HTML codes.
 			
+better-0.9.8
+-------------
+  - Fixed issue http://code.google.com/p/bet-ter/issues/detail?id=13:
+	     - mitmachen.php: 
+			      - urlencoding username and password before adding the link to the mail to the admin. 
+			        Note: urldecode is done automatically in all modern browsers.
+					  - Bugfix: admin_nachname was not printed in mail to user due to wrong variable name.
+						- Replaced further German Umlauts with proper HTML codes.
+						- Removed "Zurueck zu Startseite"-Link --> non-sense: the menu is always visible.
 
+  - general_methods.inc.php:
+	    - Bugfix: user "Gast" was correctly directed to Menue_Gast, but user "gast" was directed to Menue_user.
+			          Checking spelling now and performing strtolower whenever necessary.
 			  
 ===========================================================================================================
 TO DO:
