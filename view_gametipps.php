@@ -1,7 +1,6 @@
 <?php
 /* Spieltipps aller Spieler  */
 require "general_methods.inc.php";
-require "general_defs.inc.php";
 require "connect.inc.php";
 check_session(true, array("Gast"));
 

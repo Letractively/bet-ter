@@ -257,7 +257,7 @@ better-0.9.6
 			
 
 better-0.9.7
---------------
+-------------
   - setup.php,
     admin_settings.php,
     mitmachen.php      : Added new entries for settings data base (Admin-Konto stuff, Einsatz, Nur_Bar).
@@ -277,7 +277,16 @@ better-0.9.8
   - general_methods.inc.php:
 	    - Bugfix: user "Gast" was correctly directed to Menue_Gast, but user "gast" was directed to Menue_user.
 			          Checking spelling now and performing strtolower whenever necessary.
-			  
+
+better-0.9.9
+-------------
+  - Fixed issue http://code.google.com/p/bet-ter/issues/detail?id=10:
+	     - Replaced every occurence of $testausgabe with the method debug(), which is defined in general_methods.inc.php.
+			   Note: general_methods.inc.php now requires general_defs.inc.php, so we also removed any double requires.
+
+  - gewinnverteilung.php:
+	    - Reading value of variable $einsatz from settings database now.
+
 ===========================================================================================================
 TO DO:
   - Folgendes in setup.php abfragen und in die Anmeldungsmail (mitmachen.php) einbauen:

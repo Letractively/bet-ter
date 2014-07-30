@@ -15,9 +15,6 @@ $ausgabe = mysql_fetch_array ($result);
 		
 $user = $_SESSION['user'];
 
-$testausgabe = false;
-if ($user == "Manolo") $testausgabe = true;
-
 /*******************
 aktuelle Zeit holen
 *******************/
@@ -40,7 +37,7 @@ $ausgabedatum = $date[2].'.'.$date[1].'.'.$date[0]; //Zusammenfuehren mit "." in
 $time = explode(':',$tipptime);
 $ausgabezeit  = $time[0].':'.$time[1];
 
-//if ($testausgabe) {
+//if (debug()) {
 //  print "GLOBALS = "; print "<pre>"; var_dump($GLOBALS); print "</pre>";
 //}
 
@@ -74,7 +71,7 @@ if ($_POST['submit'] == " Absenden ")
 	$tippUpdate = "UPDATE user SET MeisterTipp=$tipped WHERE user=\"$user\"";
 	mysql_query($tippUpdate);
 
-	if ($testausgabe) {
+	if (debug()) {
 	  print "tipped = $tipped<br>";
 	  print "tippUpdate = $tippUpdate<br>";
 	}

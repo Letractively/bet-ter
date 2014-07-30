@@ -7,8 +7,11 @@ check_session(true);
 // Zur Vereinfachung
 $user = $_SESSION['user'];
 
-$einsatz = 10; // Bitte bei Abweichungen ändern oder als Turniereinstellung hinzufügen!
-$testausgabe = false; // Nur bei Bedarf aktivieren!
+// Einsatz aus settings auslesen
+$db_get_einsatz = "SELECT Einsatz FROM settings";
+$get_einsatz_result = mysql_query($db_get_einsatz);
+$ausgabe_get_einsatz = mysql_fetch_row ($get_einsatz_result);
+$einsatz = $ausgabe_get_einsatz[0];
 
 // schnelles pow (x^y)
 function powInt($x, $y) {
@@ -22,9 +25,9 @@ function powInt($x, $y) {
 /**************************************************************************************
   Verteilungsfunktionen
   Um den Gewinn zu verteilen, kann man sich einer der folgenden Funktionen bedienen.
-	Zum Testen die $testausgabe = true setzen (am besten nur für bestimmten Benutzer)
-	und test_verteilung aufrufen.
-	Achtung: neue Funktionen müssen dort eingepflegt werden!
+	Zum Testen das DEBUG-Flag in general_defs.inc.php auf true setzen (am besten nur fuer 
+	bestimmte Benutzer) und test_verteilung aufrufen.
+	Achtung: neue Verteilungsfunktionen müssen dort eingepflegt werden!
  **************************************************************************************/
 
 // Verteilungsfunktion: f(x) = 1/2(x^2)
@@ -67,7 +70,7 @@ function calc_verteilung_faktor($numOfPlayers, $numOfWinners, $verteilung) {
 
   $factor = $numOfPlayers/$sum;
 
-	if ($testausgabe) {
+	if (debug()) {
 		print "<br>";
 		print "sum          = $sum<br>";
 		print "numOfPlayers = $numOfPlayers<br>";
@@ -86,7 +89,6 @@ function array_duplicates($array){
 // Füllt den Gewinn des 1. derart auf, dass er mindestens einen Euro Abstand zum 2. mehr hat
 // als der 2. zum 3.. Dabei wird von unten nach oben aufgefüllt.
 function fill_from_start($gewinne, $min_diff) {
-  global $testausgabe;
 	
 	$count = count($gewinne);
   // Array zu klein: hier passiert der Fehler ohnehin nicht
@@ -111,7 +113,7 @@ function fill_from_start($gewinne, $min_diff) {
 	
 	$sum=0;
 	foreach(array_keys($res) as $key) $sum += $res[$key];
-	if ($testausgabe) { print "Neue Summe des Vektors:". $sum ."<br>"; }
+	if (debug()) { print "Neue Summe des Vektors:". $sum ."<br>"; }
 	
 	return $res;
 }
@@ -120,17 +122,16 @@ function fill_from_start($gewinne, $min_diff) {
 // dass manche Gewinne gleich groß sind. Diese werden hier entsprechend 
 // geändert.
 function finish_gewinne($gewinne) {
-  global $testausgabe;
 	
 	$res = $gewinne;
-	//if ($testausgabe) { print "<pre>". var_dump($res). "</pre>"; }
+	//if (debug()) { print "<pre>". var_dump($res). "</pre>"; }
   $help = array_duplicates($res); 
-	//if ($testausgabe) { print "<pre>". var_dump($help). "</pre>"; }
+	//if (debug()) { print "<pre>". var_dump($help). "</pre>"; }
 	
 	while (count($help)> 0) {
 	  foreach(array_keys($help) as $key){
 		
-		  /*if ($testausgabe) {
+		  /*if (debug()) {
 				print "count(help) = ". count($help) . "<br>";
 				print "key         = $key<br>";  
 				print "res[$key]   = ". $res[$key]. "<br>";  				
@@ -141,9 +142,9 @@ function finish_gewinne($gewinne) {
 			$res[count($res)-1]--;
 		}
 		
-    //if ($testausgabe) { print "<pre>". var_dump($res). "</pre>"; }
+    //if (debug()) { print "<pre>". var_dump($res). "</pre>"; }
 		$help = array_duplicates($res);
-  	//if ($testausgabe) { print "<pre>". var_dump($help). "</pre>"; }
+  	//if (debug()) { print "<pre>". var_dump($help). "</pre>"; }
 	}
 
   // Prüfung: wenn der Abstand des 1. zum 2. kleiner oder gleich des Abstands
@@ -159,7 +160,7 @@ function finish_gewinne($gewinne) {
 		}
 	}
 
-  if ($testausgabe) {
+  if (debug()) {
 		print "<br>Gewinne nach finish_gewinne:<br>";
     foreach(array_keys($res) as $key) {
  			 print "<b>gewinn($key) = ". $res[$key]. "</b><br>";
@@ -173,15 +174,8 @@ function finish_gewinne($gewinne) {
 // Berechnet die Gewinnsumme für alle Gewinner aus den geg. Daten
 // (ohne Berücksichtigung der Punkte der Kandidaten)
 function calc_gewinne($numOfPlayers, $numOfWinners, $gesamtgewinn, $einsatz, $verteilung) {
-  global $testausgabe;
 	
-  // FIXME!!! TEST!!!
-  //$einsatz = 10;
-  //$numOfPlayers = 21;
-  //$numOfWinners = floor($numOfPlayers/3);
-  //$gesamtgewinn = $numOfPlayers * $einsatz;
-
-	if ($testausgabe) {
+	if (debug()) {
 		print "numOfPlayers = $numOfPlayers<br>";
 		print "numOfWinners = $numOfWinners<br>";
 		print "gesamtgewinn = $gesamtgewinn<br>";
@@ -200,23 +194,23 @@ function calc_gewinne($numOfPlayers, $numOfWinners, $gesamtgewinn, $einsatz, $ve
   // Alle Gewinner bekommen mind. ihren Einsatz zurück, d.h.
   // der zu verteilende Gewinn schrumpft um (Gewinner*$einsatz)
   $gewinn_zu_verteilen = ($numOfPlayers-$numOfWinners)*$einsatz;
-  if ($testausgabe) print "gewinn_zu_verteilen = $gewinn_zu_verteilen<br>";
+  if (debug()) print "gewinn_zu_verteilen = $gewinn_zu_verteilen<br>";
   
   $verteilungs_faktor = calc_verteilung_faktor($numOfPlayers, $numOfWinners, $verteilung);
-  if ($testausgabe) print "verteilungs_faktor = $verteilungs_faktor<br>";
+  if (debug()) print "verteilungs_faktor = $verteilungs_faktor<br>";
   
   // FIXME!!! Benutze $rang hier später!
   $sumAbs = 0;
   $sumFull = 0;  
   for ($i=0; $i < $numOfWinners; $i++) {
     $gewinn_rel = $verteilung($i) * $verteilungs_faktor;
-    if ($testausgabe) print "gewinn_rel($i)  = $gewinn_rel<br>";
+    if (debug()) print "gewinn_rel($i)  = $gewinn_rel<br>";
 	
 		$gewinn_abs = floor($gewinn_rel * $gewinn_zu_verteilen / $numOfPlayers);
-		if ($testausgabe) print "gewinn_abs($i)  = $gewinn_abs<br>";
+		if (debug()) print "gewinn_abs($i)  = $gewinn_abs<br>";
 
     $gewinn_full = $gewinn_abs + 10; // = die 10 Euro, die wir vorher rausgerechnet haben
-    if ($testausgabe) print "<b>gewinn_full($i) = $gewinn_full</b><br>";
+    if (debug()) print "<b>gewinn_full($i) = $gewinn_full</b><br>";
 	
 		$sumAbs += $gewinn_abs;
 		$sumFull += $gewinn_full;
@@ -227,7 +221,7 @@ function calc_gewinne($numOfPlayers, $numOfWinners, $gesamtgewinn, $einsatz, $ve
 			$gewinn_abs  += ($gewinn_zu_verteilen - $sumAbs);
 			$gewinn_full += ($gesamtgewinn - $sumFull);
 
-			if ($testausgabe) {
+			if (debug()) {
 				print "gewinn_abs($i) neu  = $gewinn_abs<br>";
 				print "<b>gewinn_full($i) neu = $gewinn_full</b><br>";
 	
@@ -241,7 +235,7 @@ function calc_gewinne($numOfPlayers, $numOfWinners, $gesamtgewinn, $einsatz, $ve
 		$res[$i] = $gewinn_full; // Speichere die Gewinne im Array
   }
 
-	if ($testausgabe) {
+	if (debug()) {
 		print "sumAbs  = $sumAbs<br>";
 		print "sumFull = $sumFull<br>";
 	}  
@@ -251,7 +245,6 @@ function calc_gewinne($numOfPlayers, $numOfWinners, $gesamtgewinn, $einsatz, $ve
 
 // Sortiert das Ranking nach Punkten
 function sortiere_nach_punkten(&$ranking) {
-  global $testausgabe;
 
 	$last_punkte = 0;
 	$gewinn_rang = 1;
@@ -270,7 +263,7 @@ function sortiere_nach_punkten(&$ranking) {
 		$last_gewinn_rang = $gewinn_rang;
   }
 
-	if ($testausgabe) {
+	if (debug()) {
 		print "<br>";
 	  foreach(array_keys($ranking) as $key) {
 			print "spieler   = ". $ranking[$key]["user"]. "<br>";
@@ -292,7 +285,6 @@ function sortiere_nach_punkten(&$ranking) {
 // Platz 2 -> existiert nicht mehr (mit Platz 1 fusioniert)
 // Platz 3           = 30 Euro (keine Änderung)
 function bereinige_gewinne(&$ranking, $gewinne) {
-  global $testausgabe;
 	
   sortiere_nach_punkten($ranking);
 
@@ -307,31 +299,31 @@ function bereinige_gewinne(&$ranking, $gewinne) {
 		$gewinne_neu_keys[$key]   = $key;
 		$gewinne_neu_values[$key] = -1;
 
-		if ($testausgabe) {
+		if (debug()) {
 		  print "rang      = $rang<br>";
 			print "last_rang = $last_rang<br>";
 		}
 
     if ($rang == $last_rang) {
       $cnt++;
-  		if ($testausgabe) {	print "cnt       = $cnt<br>"; }
+  		if (debug()) {	print "cnt       = $cnt<br>"; }
 			continue;
 		}
 
 		$offset = $rang - $start - 1;
-		if ($testausgabe) {
+		if (debug()) {
 			print "<b>start  = $start</b><br>";
 			print "<b>offset = $offset</b><br>";
 		}
 
   	$toShare = array_sum(array_slice($gewinne, $start, $offset)); // Zu (evtl.) teilende Summe
-		if ($testausgabe) {
+		if (debug()) {
 		  print "last_rang = $last_rang<br>";
 			print "toShare = $toShare<br>";
 		}
 		$toShare /= ($cnt-$start);
 
-		if ($testausgabe) {
+		if (debug()) {
 		  print "cnt = $cnt<br>";
 			print "start = $start<br>";
 			print "<b>toShare = $toShare</b><br>";
@@ -348,24 +340,24 @@ function bereinige_gewinne(&$ranking, $gewinne) {
 	// Zum letzten Mal noch den Gewinn eintragen
 	// (besonders wichtig, wenn noch niemand Punkte hat, d.h. ALLE Spieler auf Rang 1 sind!)
 	$offset = $last_rang - $start;
-	if ($testausgabe) {
+	if (debug()) {
 	  print "<b>start  = $start</b><br>";
 		print "<b>offset = $offset</b><br>";
 	}
 
   if ($start == 0 && $last_rang == 1) { // d.h. Initialwerte, d.h. ALLE Spieler haben die gleiche Punktzahl)
     $offset = count($gewinne); // damit werden ALLE Gewinnsummen aufaddiert
-		if ($testausgabe) { print "<b>offset (changed) = $offset</b><br>"; }
+		if (debug()) { print "<b>offset (changed) = $offset</b><br>"; }
 	}
 
 	$toShare = array_sum(array_slice($gewinne, $start, $offset)); // Zu (evtl.) teilende Summe
-	if ($testausgabe) {
+	if (debug()) {
 		print "cnt     (end) = $cnt<br>";
 		print "start   (end) = $start<br>";
 		print "toShare (end) = $toShare<br>";
 	}
 	$toShare /= ($cnt-$start);
-	if ($testausgabe) {
+	if (debug()) {
 		print "<b>toShare (end2) = $toShare</b><br>";
 	}
 
@@ -375,7 +367,7 @@ function bereinige_gewinne(&$ranking, $gewinne) {
 	
 	$gewinne_neu = array_combine($gewinne_neu_keys, $gewinne_neu_values);
 
-	if ($testausgabe) {
+	if (debug()) {
    	print "<pre>gewinne_neu_keys   = ". var_dump($gewinne_neu_keys).   "</pre><br>";
    	print "<pre>gewinne_neu_values = ". var_dump($gewinne_neu_values). "</pre><br>";
    	print "<pre>gewinne_neu        = ". var_dump($gewinne_neu).        "</pre><br>";				
@@ -385,10 +377,6 @@ function bereinige_gewinne(&$ranking, $gewinne) {
 
 
 function test_verteilungen() {
-	global $testausgabe;
-
-	$testausgabe_old = $testausgabe;
-	$testausgabe = true;
 
 	print ('<table align="center" border="1">
 				 <colgroup>
@@ -437,8 +425,6 @@ function test_verteilungen() {
 	print ("</tr>");
 
 	print ("</table>");		
-	
-	$testausgabe = $testausgabe_old;
 }
 
 ?> 
@@ -509,7 +495,7 @@ Dabei kann es durchaus vorkommen, dass der Spieler auf dem nachfolgenden Platz m
 		$rang++;
 	}
 
-	if ($testausgabe) {
+	if (debug()) {
   	  print "<pre>". var_dump($ranking). "</pre><br>";
 	}
 	
@@ -519,7 +505,7 @@ Dabei kann es durchaus vorkommen, dass der Spieler auf dem nachfolgenden Platz m
   $gewinne = calc_gewinne($numOfPlayers, $numOfWinners, $gewinn_max, $gewinn_min, verteilung4);
   $gewinne = array_reverse($gewinne); // Sortierung korrigieren (vorher: vom LETZTEN zum ERSTEN Gewinner)
 
-	if ($testausgabe) {
+	if (debug()) {
 		print "numOfPlayers = $numOfPlayers<br>";
 		print "numOfWinners = $numOfWinners<br>";
 		print "gesamtgewinn = $gesamtgewinn<br>";

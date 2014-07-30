@@ -4,12 +4,8 @@
 ** File: "./flags/Logo.gif"
 ******************************************************************************************************************************/
 require "general_methods.inc.php";
-require "general_defs.inc.php";
 require "connect.inc.php";
 check_session(true);
-
-//heute = date("Y-m-d");
-//$time = date("H:i:s");
 
 //Ermitteln, wessen Tipps angezeigt werden sollen
 $user_to_show_ID=$_GET["uid"];
@@ -67,7 +63,7 @@ if ($chosen_kat >= 100) { // values >= 100 sind spezielle Optionen wie z.B. "Die
   $kat_flag = "%";
 }
 
-if ($testausgabe) {
+if (debug()) {
   print "chosen_kat = $chosen_kat<br>";
 	print "kat_flag   = $kat_flag<br>";
 }

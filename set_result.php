@@ -61,7 +61,7 @@ $ggID_result = mysql_query($db_get_games);
 //Wenn EINTRAGEN geklickt wurde
 if ($submit == " Eintragen ") {
 
-		if ($testausgabe) {
+		if (debug()) {
 			print "=====================================================================================================<br>";
 		}
 
@@ -86,7 +86,7 @@ if ($submit == " Eintragen ") {
         while ($ausgabe_get_tipp = mysql_fetch_array ($get_tipps_result))
         {
 				
-            if ($testausgabe) {
+            if (debug()) {
 	   					print "tor1 : tor2 = ". $tor1. " : ". $tor2. "<br>";
 					    print "Tipp von user ". $ausgabe_get_tipp[User]. ":  tor1 : tor2 (Faktor) = ". $ausgabe_get_tipp[Tore1] ." : ". $ausgabe_get_tipp[Tore2]. 
 						        "(". $ausgabe_get_tipp[Faktor]. ")<br>";
@@ -104,7 +104,7 @@ if ($submit == " Eintragen ") {
               $points = 0;
             }
 
-            if ($testausgabe) {
+            if (debug()) {
               print "Ergebnis: $points Punkte<br>";
 						}
 
@@ -127,7 +127,7 @@ if ($submit == " Eintragen ") {
             $data = mysql_fetch_array($calc_pointsum);
             $totalpoints =  $data[total];
 
-            if ($testausgabe) {
+            if (debug()) {
               print "totalpoints = $totalpoints<br>";
 						}
             
@@ -137,7 +137,7 @@ if ($submit == " Eintragen ") {
             $data = mysql_fetch_array($get_MeisterPoints);
             
             $totalpoints = $totalpoints + $data[MeisterTippPunkte];
-            if ($testausgabe) {
+            if (debug()) {
               print "totalpoints (inkl. Meistertipp) = $totalpoints<br>";
 							print "=====================================================================================================<br>";
 						}

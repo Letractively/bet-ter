@@ -55,7 +55,7 @@ if (isset($_POST['submit']))
 		  $user          = $rowUser[user];
 			$currentUserID = $rowUser[USER_ID];
 
-			if ($testausgabe) {
+			if (debug()) {
 				print "{ user, userID, currentUserID } = { $user, $userID, $currentUserID }<br>";
 			}
 		

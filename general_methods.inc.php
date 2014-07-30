@@ -1,4 +1,6 @@
 <?php 
+require_once "general_defs.inc.php";
+
 // -------------------------------------------------------------------------------------------
 //	today()
 //	Gibt das heutige Datum (im richtigen Format) zurück.
@@ -674,6 +676,24 @@ function array_join($array, $delimiter) {
 	}
 	
 	return $str;
+}
+
+// -------------------------------------------------------------------------------------------
+//	debug()
+//	Gibt zurueck, ob das Skript sich gerade im Debug-Modus befindet (d.h. Testausgaben
+//  schreiben soll) oder nicht.
+//  Achtung: 
+//     - Die Kuer waere, Debug Levels einzufuehren. Dazu muessten aber viele Ausgaben
+//       quer durch das gesamte better ersetzt werden.      
+// -------------------------------------------------------------------------------------------
+function debug() {
+
+	$debug_users = preg_split('/[\s,]+/', DEBUG_USERS, -1, PREG_SPLIT_NO_EMPTY);
+	if (DEBUG && 
+	    $_SESSION["user"] && 
+			in_array($_SESSION["user"], $debug_users)) return true;
+
+	return false;
 }
 
 /*
