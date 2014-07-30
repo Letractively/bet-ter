@@ -1,6 +1,5 @@
 <?php
 /* Gast will mitmachen  */
-require "general_defs.inc.php";
 require "general_methods.inc.php";
 require "connect.inc.php";
 check_session(true, array(), array("Gast"));
@@ -170,7 +169,7 @@ if (isset($_POST['submit']) && $err === true) {
   $latestReg = add_date($fullStartDatum, 0, 0, -1, 0, 0, 0);
 	$fullLatestReg = timestamp_to_full_date($latestReg);
 
-  if ($testausgabe) {
+  if (debug()) {
 		print "startDatum = ". $startDatum . "<br>";
 		print "startZeit  = ". $startZeit . "<br>";
 		

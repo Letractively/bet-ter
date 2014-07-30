@@ -3,7 +3,7 @@
 //	Die aktuelle Versionsnummer.
 //  Wird benutzt in index_2.php.
 // -------------------------------------------------------------------------------------------
-define ("VERSION", "0.9.8");
+define ("VERSION", "0.9.9");
 
 // -------------------------------------------------------------------------------------------
 //	Min. und Max. der vergebbaren Tore (beeinflusst u.a. die Auswahllisten in tab.php).
@@ -24,4 +24,11 @@ define ("FLAG_HEIGHT", 24);
 //    - Wenn dies als array benutzt werden soll, dann mit str_split() splitten.
 // -------------------------------------------------------------------------------------------
 define ("ILLEGAL_CHARS", "-*;'+& ");
+
+// -------------------------------------------------------------------------------------------
+//	Debugging-Kram.
+//  Wenn mehrere DEBUG_USERS angegeben werden sollen: mit Komma trennen!
+// -------------------------------------------------------------------------------------------
+define ("DEBUG" , true);
+define ("DEBUG_USERS", "Manolo");
 ?>

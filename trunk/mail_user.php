@@ -4,13 +4,10 @@ require "general_methods.inc.php";
 require "connect.inc.php";
 check_session(true);
 
-$testausgabe = false;
-if ($_SESSION['user'] == "admin") $testausgabe = true;
-
 // Ermitteln, wem eine Mail geschickt werden soll 
 // (aus $_GET UND aus $_POST - je nachdem, ob die Seite per Link aufgerufen wurde oder ob man gerade einen User manuell ausgewaehlt hat)
 $user_to_mail_ID = isset($_GET["uid"])? $_GET["uid"] : $_POST["uid"];
-if ($testausgabe) { print "user_to_mail_ID = $user_to_mail_ID<br>"; }
+if (debug()) { print "user_to_mail_ID = $user_to_mail_ID<br>"; }
 
 if ($user_to_mail_ID) {
 	
@@ -19,7 +16,7 @@ if ($user_to_mail_ID) {
 	$ausgabeInfo = mysql_fetch_array($result_userinfo);
 	
 	$user_to_mail_name = $ausgabeInfo[user];
-	if ($testausgabe) { print "user_to_mail_name = $user_to_mail_name<br>"; }
+	if (debug()) { print "user_to_mail_name = $user_to_mail_name<br>"; }
 
 } else { // $_GET["uid"] und $_POST["uid"]nicht gesetzt
 
@@ -50,7 +47,7 @@ print $menu;
 ** ERSTES LADEN DER SEITE	**
 ** (mit oder ohne uid)    **
 *****************************/
-if ($testausgabe) { print "submit = $submit<br>"; }
+if (debug()) { print "submit = $submit<br>"; }
 if (!isset($submit) || $submit != "Senden")
 {
 	if (!$user_to_mail_ID) {

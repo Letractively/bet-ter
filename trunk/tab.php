@@ -1,16 +1,12 @@
 <?php
 /* Meine Tipps */
 require "general_methods.inc.php";
-require "general_defs.inc.php";
 require "connect.inc.php";
 check_session(true, array(), array(), array("Gast", "admin"));
 
 // Zur Vereinfachung
 $user = $_SESSION['user'];
 
-// zum Testen
-$testausgabe = false;
-if ($user == "Manolo" || $user == "admin") $testausgabe = true;
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -63,7 +59,7 @@ if ($chosen_kat >= 100) { // values >= 100 sind spezielle Optionen wie z.B. "Die
   $kat_flag = "%";
 }
 
-if ($testausgabe) {
+if (debug()) {
   print "chosen_kat = $chosen_kat<br>";
 	print "kat_flag   = $kat_flag<br>";
 }
@@ -83,7 +79,7 @@ $res_SGFKV = mysql_db_query($dbName,$calc_SGFKV, $connect);
 $SGFKV_out = mysql_fetch_array($res_SGFKV); 
 $SGFKV =  $SGFKV_out[katfatsverg];
 
-if ($testausgabe == true) { 
+if (debug()) { 
 	print("<br> calc_SGFKV: $calc_SGFKV <br>");
 }
 
@@ -157,7 +153,7 @@ Prüfen, ob bereits Spiele gelaufen sind und die Anzahl Faktorpunkte abziehen
 //$result_letzte_spiele = mysql_query($db_letzte_spiele);
 //$num_letzte_spiele = mysql_num_rows($result_letzte_spiele);
 //
-//if ($testausgabe) {
+//if (debug()) {
 //  print "firstTip          = $firstTip<br>";
 //  print "num_getippt       = $num_getippt<br>";
 //	print "num_letzte_spiele = $num_letzte_spiele<br>";
@@ -377,7 +373,7 @@ if (isset($_POST[submit])) {
 		/*****************
 		** TESTAUSGABE	**
 		*****************/
-		if ($testausgabe==true)
+		if (debug())
 		{
 			print("<br><br><hr><br>
 				Summe gesamt gesetzte Faktorpunkte: $SGGF <br>
@@ -441,7 +437,7 @@ while ($ausgabe = mysql_fetch_array ($result))
 			$tor1 = $_POST["S$ausgabe[SPIEL_ID]_Team1"];
 			$tor2 = $_POST["S$ausgabe[SPIEL_ID]_Team2"];
 	
-			if ($testausgabe) {
+			if (debug()) {
 				print "tor1 = $tor1<br>";
 				print "tor2 = $tor2<br>";
 			}
@@ -450,7 +446,7 @@ while ($ausgabe = mysql_fetch_array ($result))
 		  $tor1 = correctTor($tor1, MIN_TORE, MAX_TORE);
 		  $tor2 = correctTor($tor2, MIN_TORE, MAX_TORE);		 
 
- 		  if ($testausgabe) {
+ 		  if (debug()) {
 			  print "tor1 = $tor1<br>";
 			  print "tor2 = $tor2<br>";
 		  }
@@ -689,7 +685,7 @@ while ($ausgabe = mysql_fetch_array ($result))
 		 echo'<input type="hidden" name="SGFK" value="'.$SGFK.'">';
 */
 
-if ($testausgabe) {
+if (debug()) {
   print "<pre>faktorMax = $faktorMax</pre>";
   print "<pre>faktorMin = $faktorMin</pre>";
   print "<pre>SummeFaktor = $SummeFaktor</pre>";
@@ -697,11 +693,11 @@ if ($testausgabe) {
 
 if (!$SummeFaktor) {  // d.h. diese Seite wurde zum 1. Mal aufgerufen
   $SummeFaktor = $faktorMax - $faktorMin;
-  if ($testausgabe) { print "<pre>SummeFaktor neu = $SummeFaktor</pre>"; }
+  if (debug()) { print "<pre>SummeFaktor neu = $SummeFaktor</pre>"; }
 }
 
 $RestFaktorPunkte = $faktorMax - $SummeFaktor;
-if ($testausgabe) { print "<pre>RestFaktorPunkte= $RestFaktorPunkte</pre>"; }
+if (debug()) { print "<pre>RestFaktorPunkte= $RestFaktorPunkte</pre>"; }
 if ($RestFaktorPunkte > $faktorMax)
 {
     $RestFaktorPunkte = $faktorMax;

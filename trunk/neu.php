@@ -3,11 +3,8 @@
 Hier kann vom admin ein neuer USER angelegt werden
 */
 require "general_methods.inc.php";
-require "general_defs.inc.php";
 require "connect.inc.php";
 check_session(true, array(), array("admin"));
-
-$testausgabe = false;
 
 // -------------------------------------------------------------------------------------------
 //	dataOK()
@@ -149,7 +146,7 @@ if(!isset($_POST['submit'])) {
 
 <?php
 
-if ($testausgabe) {
+if (debug()) {
 	print "err = $err<br>";
 }
 
@@ -159,7 +156,7 @@ if (isset($_POST['submit']) && $err === true) { // Alles OK, Benutzer angelegt
 	 ** E-Mail an User senden: Account angelegt **
 	 *********************************************/
 	$url  = root_url(); // URL zum Login
-	if ($testausgabe) {
+	if (debug()) {
 		echo "url = \"$url\"<br>";
 	}
 		
@@ -205,7 +202,7 @@ if (isset($_POST['submit']) && $err === true) { // Alles OK, Benutzer angelegt
 	$row_userID    = mysql_fetch_assoc($result_userID);
 	$userID        = $row_userID[USER_ID];
 	
-	if ($testausgabe) {
+	if (debug()) {
 		print "userID = $userID<br>";
 	}
 
