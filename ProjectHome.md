@@ -1,0 +1,1 @@
+Web-Interface to manage a betting round with friends
